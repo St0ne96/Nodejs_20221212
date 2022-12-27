@@ -11,11 +11,12 @@ router.get("/boards", async (req, res) => {
     // 오류 예제
     // try catch 있을때/없을때
     // const boards = await NonexistentCollection.find({});
+    // await 쓴 이유 : 이 처리가(비동기적으로 움직이구나) 끝날 때까지 기다린다. 끝나면 보드에 넣어주기 위해서. 
 
     res.send(boards);
   } catch (error) {
     console.error(error);
-
+// errorcode: 10 => 에러코드 명세가 있음, 그것으로 확인하기 나중에 이렇게 짜자 지금은 테스트용으로 한 것임 
     res.status(500).send({ message: error.message });
   }
 });
@@ -89,6 +90,7 @@ router.put("/boards/:boardId", async (req, res) => {
       return res.status(400).send({ message: "파라미터를 확인하세요" });
     }
 
+    // 객체구조활동 const _password : "12341234"
     const { password: _password } = await Board.findById(boardId, "password");
     if (_password !== password) {
       return res.status(400).send({ message: "비밀번호를 확인하세요" });
@@ -98,6 +100,7 @@ router.put("/boards/:boardId", async (req, res) => {
       boardId,
       { title, body, userName, password },
       {
+        // new: true 준 이유 : title 123 => 234 으로 변경했을 때 밑에 콘솔에 찍힐려면 new를 넣어야 옛날 값이 아닌 새로운 값이 찍힘 
         new: true,
       }
     );
